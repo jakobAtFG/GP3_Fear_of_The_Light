@@ -62,6 +62,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FString, FVector> EnemyStartLocations;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FString> TriggerVolumes;
 	
 	// META DATA
 
