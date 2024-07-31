@@ -5,6 +5,7 @@
 
 #include "GameManager.h"
 #include "GameFramework/Character.h"
+#include "GP3Character.h"
 
 // Sets default values
 AEndPoint::AEndPoint()
@@ -37,7 +38,7 @@ void AEndPoint::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                               const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(ACharacter::StaticClass()))
+	if (OtherActor->IsA(AGP3Character::StaticClass()))
 	{
 		if(GetWorld()->GetGameInstance()->IsA(UGameManager::StaticClass()))
 		{
