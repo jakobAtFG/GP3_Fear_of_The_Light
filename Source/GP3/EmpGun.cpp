@@ -98,13 +98,23 @@ void AEmpGun::BlueprintLineTraceFromPlayer()
 	FVector EndLocation = EndForward + StartLocation;
 
 	//Do a line trace from the player camera location forwards using the EMP collision channel. 
-	GetWorld()->LineTraceSingleByChannel(HitResultEmp, StartLocation, EndLocation, ECC_EMP, CollisionQueryParams);
+	//GetWorld()->LineTraceSingleByChannel(HitResultEmp, StartLocation, EndLocation, ECC_EMP, CollisionQueryParams);
+	GetWorld()->LineTraceSingleByChannel(HitResultEmp, StartLocation, EndLocation, ECC_Visibility, CollisionQueryParams);
+
 
 
 	if (HitResultEmp.bBlockingHit)
 	{
 		//If we hit something we check if its a light actor.
-		if (!HitResultEmp.GetActor()->IsA<ALightActor>()) return;
+		//if (!HitResultEmp.GetActor()->IsA<ALightActor>()) return;
+
+		//If we hit something we check if its a light actor. If not then remove the current light target becuase now it is not in line of sight, then return;
+		if (!HitResultEmp.GetActor()->IsA<ALightActor>()) 
+		{
+			TargetLight = nullptr;
+			return;
+		}
+
 
 		HitResultEmp.GetActor()->GetComponents(Lights, true);
 

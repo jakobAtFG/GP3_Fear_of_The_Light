@@ -24,7 +24,7 @@ public:
 	bool TurnOfLightBool = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	float Distance = 1000;
+	float Distance = 2000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float BatteryDepletion = 10;
