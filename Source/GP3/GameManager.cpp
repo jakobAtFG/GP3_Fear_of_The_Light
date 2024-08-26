@@ -79,7 +79,7 @@ void UGameManager::RequestLoad()
 	bIsLoading = false;
 }
 
-bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite = false)
+bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite/* = false*/)
 {
     /*This method sets the value of a Steam Stat of the current Steam user. It has three input variables: 
     StatName - the name of the stat
@@ -91,18 +91,18 @@ bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite 
     If bOverwrite is false, the new value of the stat should be the old value of the stat plus the inputted Value. That is, we need to get the current value from Steam and then add the inputted value to it before setting it again. 
         If the old value cannot be read or is 0, the new value should simply be set to the inputted Value.*/
 
-    /*IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get(STEAM_SUBSYSTEM);
+    IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get(STEAM_SUBSYSTEM);
     if (OnlineSubsystem == nullptr)
     {
         UE_LOG(LogTemp, Warning, TEXT("Steam Online Subsystem not found."));
-        return;
+        return false;
     }
 
     IOnlineStatsPtr StatsInterface = OnlineSubsystem->GetStatsInterface();
     if (!StatsInterface.IsValid())
     {
         UE_LOG(LogTemp, Warning, TEXT("Stats interface not available."));
-        return;
+        return false;
     }
 
     IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
@@ -110,19 +110,26 @@ bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite 
     if (!UserId.IsValid())
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to get User ID."));
-        return;
+        return false;
     }
 
     // If Overwrite is true, update the stat directly
+    FOnlineStats* OnlineStats = new FOnlineStats();
     if (bOverwrite)
     {
+        OnlineStats->SetIntStat(StatName, Value);
+        /*
         FOnlineStatsUserUpdatedStats UserUpdatedStats(UserId.ToSharedRef());
         FOnlineStatUpdate StatUpdate;
         StatUpdate.Set(Value, FOnlineStatUpdate::EOnlineStatModificationType::Set); // ChatGPT suggested StatUpdate.SetByInteger(Value); for this but that function doesn't exist
         UserUpdatedStats.Stats.Add(StatName, StatUpdate);
-        StatsInterface->UpdateStats(UserUpdatedStats);
+        StatsInterface->UpdateStats(UserUpdatedStats);*/
     }
-    else
+    else {
+        OnlineStats->IncrementIntStat(StatName, Value);
+    }
+    return true;
+    /*else
     {
         // If Overwrite is false, query the current stats first
         FOnlineStatsQueryOptions QueryOptions;

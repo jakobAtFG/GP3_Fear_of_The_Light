@@ -9,6 +9,7 @@
 #include "OnlineSubsystemUtils.h"
 #include "Interfaces/OnlineStatsInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
+#include "OnlineStats.h"
 #include "GameManager.generated.h"
 
 /**
