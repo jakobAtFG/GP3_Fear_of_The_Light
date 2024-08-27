@@ -79,9 +79,9 @@ void UGameManager::RequestLoad()
 	bIsLoading = false;
 }
 
-bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite/* = false*/)
+/*bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite) /= false
 {
-    /*This method sets the value of a Steam Stat of the current Steam user. It has three input variables: 
+    This method sets the value of a Steam Stat of the current Steam user. It has three input variables: 
     StatName - the name of the stat
     Value - the value of the stat
     bOverwrite - a bool to determine if the Steam stat value should be overwritten or incremented by the inputted value
@@ -89,7 +89,7 @@ bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite/
     Intended behavior: The method should be blueprintcallable. 
     If bOverwrite is true, the new value of the stat should be the inputted Value, overriding the old value.
     If bOverwrite is false, the new value of the stat should be the old value of the stat plus the inputted Value. That is, we need to get the current value from Steam and then add the inputted value to it before setting it again. 
-        If the old value cannot be read or is 0, the new value should simply be set to the inputted Value.*/
+        If the old value cannot be read or is 0, the new value should simply be set to the inputted Value.
 
     IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get(STEAM_SUBSYSTEM);
     if (OnlineSubsystem == nullptr)
@@ -118,18 +118,17 @@ bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite/
     if (bOverwrite)
     {
         OnlineStats->SetIntStat(StatName, Value);
-        /*
         FOnlineStatsUserUpdatedStats UserUpdatedStats(UserId.ToSharedRef());
         FOnlineStatUpdate StatUpdate;
         StatUpdate.Set(Value, FOnlineStatUpdate::EOnlineStatModificationType::Set); // ChatGPT suggested StatUpdate.SetByInteger(Value); for this but that function doesn't exist
         UserUpdatedStats.Stats.Add(StatName, StatUpdate);
-        StatsInterface->UpdateStats(UserUpdatedStats);*/
+        StatsInterface->UpdateStats(UserUpdatedStats);
     }
     else {
         OnlineStats->IncrementIntStat(StatName, Value);
     }
     return true;
-    /*else
+    else
     {
         // If Overwrite is false, query the current stats first
         FOnlineStatsQueryOptions QueryOptions;
@@ -163,8 +162,8 @@ bool UGameManager::SetSteamIntStat(FName StatName, int32 Value, bool bOverwrite/
                 }
             }
         ));
-    }*/
-}
+    }
+}*/
 
 UGameManager::UGameManager()
 {

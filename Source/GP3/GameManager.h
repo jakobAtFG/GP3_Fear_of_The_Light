@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
-#include "OnlineSubsystem.h"
+/*#include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
 #include "Interfaces/OnlineStatsInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
-#include "OnlineStats.h"
+#include "OnlineStats.h"*/
 #include "GameManager.generated.h"
 
 /**
@@ -53,8 +53,8 @@ public:
 	UPROPERTY(BlueprintAssignable);
 	FOnSaveDataLoaded OnSaveDataLoaded;
 
-	UFUNCTION(BlueprintCallable, Category = "Steam")
-	static bool SetSteamIntStat(FName StatName, int32 Value, bool Overwrite = false);
+	/*UFUNCTION(BlueprintCallable, Category = "Steam")
+	static bool SetSteamIntStat(FName StatName, int32 Value, bool Overwrite = false);*/
 	
 private:
 	UGameManager();
