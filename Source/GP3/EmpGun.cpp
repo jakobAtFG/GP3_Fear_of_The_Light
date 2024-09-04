@@ -36,6 +36,8 @@ void AEmpGun::BeginPlay()
 	}
 
 	LastFireTime = 0;
+	MissLastFireTime = 0;
+
 }
 
 // Called every frame
@@ -49,38 +51,26 @@ void AEmpGun::Tick(float DeltaTime)
 void AEmpGun::Shoot(bool bIsToggledOn, ETool Tool)
 {
 	//If our current tool is not the emp, if we dont have a target light and if the light is not visible/ intensity is 0, if any then we stop.
-	if (Tool != ETool::EMP) {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("No EMP Equipped"));
-		return;
-	}
+	if (Tool != ETool::EMP) return;
 
 	//If gun is in cooldown
 	if (!TargetLight)
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("No target light"));
 		Misfire();
 		return;
 	}
-	if ((!Lights[0]->IsVisible()) || (Lights[0]->Intensity == 0))
+	if ((!TargetLight->IsVisible()) || (TargetLight->Intensity == 0))
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Target light is already turned off"));
 		Misfire();
 		return;
 	}
 
 	//If we dont have battery larger than the emp depletion rate then we return. 
-	if (BatteryComponent->CurrentPower < BatteryDepletion) {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("No battery"));
-		return;
-	}
+	if (BatteryComponent->CurrentPower < BatteryDepletion) return;
 
 	//If gun is in cooldown after shoot lamp
-	const float CurrentTime = GetWorld()->TimeSeconds;
-	if (CurrentTime - LastFireTime < FireCoolDown) {
+	CurrentTime = GetWorld()->TimeSeconds;
+	if ((CurrentTime - LastFireTime < FireCoolDown) && (LastFireTime > 0)) {
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Still cooling down"));
 		return;
@@ -149,12 +139,13 @@ void AEmpGun::BlueprintLineTraceFromPlayer()
 
 void AEmpGun::Misfire()
 {
+	//Delay on mis fire
+	const float MissCurrentTime = GetWorld()->TimeSeconds;
+
+	if (MissCurrentTime - MissLastFireTime < MissCoolDown) return;
+	MissLastFireTime = MissCurrentTime;
 	
 
-	//Delay on mis fire
-	const float CurrentTime = GetWorld()->TimeSeconds;
-	if (CurrentTime - LastFireTime < MissCoolDown) return;
-	LastFireTime = CurrentTime;
 
 	//Mis fire blueprint event triggered
 	EmpMisfire();

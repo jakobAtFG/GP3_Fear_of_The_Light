@@ -41,6 +41,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MissCoolDown = 1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentTime = 0;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayEmpSound();
 
@@ -70,6 +73,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UBatteryComponent* BatteryComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MissLastFireTime = 0;
 
 	UFUNCTION()
 	void Shoot(bool bIsToggledOn, ETool Tool);
