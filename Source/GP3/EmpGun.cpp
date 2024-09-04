@@ -49,26 +49,42 @@ void AEmpGun::Tick(float DeltaTime)
 void AEmpGun::Shoot(bool bIsToggledOn, ETool Tool)
 {
 	//If our current tool is not the emp, if we dont have a target light and if the light is not visible/ intensity is 0, if any then we stop.
-	if (Tool != ETool::EMP) return;
+	if (Tool != ETool::EMP) {
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("No EMP Equipped"));
+		return;
+	}
 
 	//If gun is in cooldown
 	if (!TargetLight)
 	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("No target light"));
 		Misfire();
 		return;
 	}
 	if ((!Lights[0]->IsVisible()) || (Lights[0]->Intensity == 0))
 	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Target light is already turned off"));
 		Misfire();
 		return;
 	}
 
 	//If we dont have battery larger than the emp depletion rate then we return. 
-	if (BatteryComponent->CurrentPower < BatteryDepletion) return;
+	if (BatteryComponent->CurrentPower < BatteryDepletion) {
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("No battery"));
+		return;
+	}
 
 	//If gun is in cooldown after shoot lamp
 	const float CurrentTime = GetWorld()->TimeSeconds;
-	if (CurrentTime - LastFireTime < FireCoolDown) return;
+	if (CurrentTime - LastFireTime < FireCoolDown) {
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Still cooling down"));
+		return;
+	}
 	LastFireTime = CurrentTime;
 
 	//Remove battery power corresponding to our depletion rate.
