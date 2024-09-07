@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bSaveOnlyOnce = true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString SaveID = "SaveTrigger01";
+
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* BoxComponent;
 	

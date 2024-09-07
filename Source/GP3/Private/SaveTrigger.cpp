@@ -58,7 +58,7 @@ void ASaveTrigger::OnOverlapBegin(
 
 void ASaveTrigger::HandleSaveRequested(UGP3SaveGame* SaveGame)
 {
-	FString Name = GetFName().ToString();
+	FString Name = SaveID;
 	
 	if (SaveGame->SaveTriggerStates.Contains(Name))
 	{
@@ -72,7 +72,7 @@ void ASaveTrigger::HandleSaveRequested(UGP3SaveGame* SaveGame)
 
 void ASaveTrigger::HandleSaveDataLoaded(UGP3SaveGame* SaveGame)
 {
-	FString Name = GetFName().ToString();
+	FString Name = SaveID;
 
 	if (SaveGame->SaveTriggerStates.Contains(Name))
 	{
