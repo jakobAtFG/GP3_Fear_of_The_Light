@@ -50,6 +50,7 @@ void UBatteryComponent::BeginPlay()
 
 	// ...
 	UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::Cos(FMath::DegreesToRadians(RechargeDirectionRangInDegree)));
+
 }
 
 
@@ -58,11 +59,19 @@ void UBatteryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                       FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
 	if (bIsRecharging)
 	{
 		Recharge(RechargeRate);
 	}
+
+	
+	if(LastFramePower == MaxPower && LastFramePower > CurrentPower)
+	{
+		OnNotFull.Broadcast();
+	}
+	LastFramePower = CurrentPower;
+
 
 	// UE_LOG(LogTemp, Warning, TEXT("ViewForward: %s"), *OwnerCharacter->ViewForward.ToString())
 
@@ -73,12 +82,15 @@ void UBatteryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UBatteryComponent::Recharge(const float Rate)
 {
 	if (CurrentPower < MaxPower)
+	{
 		CurrentPower += GetWorld()->DeltaTimeSeconds * Rate;
+	}
 	else
 	{
 		CurrentPower = MaxPower;
 		bIsRecharging = false;
 		OnStopRecharge.Broadcast();
+		OnFull.Broadcast();
 	}
 }
 
@@ -86,7 +98,10 @@ bool UBatteryComponent::Consume(ETool Tool)
 {
 	if (CurrentPower >= GetWorld()->DeltaTimeSeconds * ConsumeRates[Tool])
 	{
+		float PowerBeforeConsume = CurrentPower;
 		CurrentPower -= GetWorld()->DeltaTimeSeconds * ConsumeRates[Tool];
+
+		
 		return true;
 	}
 	else
@@ -102,4 +117,9 @@ void UBatteryComponent::ToggleRecharge()
 	{
 		RechargeDirection = OwnerCharacter->ViewForward;
 	}
+}
+
+bool UBatteryComponent::IsBatteryFull()
+{
+	return CurrentPower == MaxPower; 
 }
