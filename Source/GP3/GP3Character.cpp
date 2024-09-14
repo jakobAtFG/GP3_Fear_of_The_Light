@@ -344,6 +344,8 @@ void AGP3Character::HandleDetectionEndingOverlap(UPrimitiveComponent* Overlapped
 	if (OtherActor->IsA(AInteractableActor::StaticClass()))
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("%s is out of range of %s"), *OtherActor->GetName(), *GetName());
+		AInteractableActor* OtherInteractableActor = Cast<AInteractableActor>(OtherActor);
+		OtherInteractableActor->CloseInfoOnScreen();
 		Cast<AInteractableActor>(OtherActor)->bIsInteractable = false;
 		InteractbleInRange--;
 	}

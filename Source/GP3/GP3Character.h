@@ -148,7 +148,7 @@ public:
 	float CrouchingMoveSpeed;
 
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AInteractableActor* TargetInteractableActor = nullptr;
 
 	UFUNCTION()
