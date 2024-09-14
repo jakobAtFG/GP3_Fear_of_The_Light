@@ -117,7 +117,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	USphereComponent* InteractionDetection = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DetectionLength = 500.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
