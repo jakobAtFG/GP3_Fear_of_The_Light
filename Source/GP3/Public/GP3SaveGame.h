@@ -68,6 +68,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FString, int> TimerTimings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NumberOfTerminalsOverridden;
 	
 	// META DATA
 
