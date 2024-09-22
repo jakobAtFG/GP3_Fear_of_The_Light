@@ -38,6 +38,8 @@ public:
 	
 	float LastFramePower =  0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TotalConsumedPower = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector RechargeDirection = FVector(0.f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

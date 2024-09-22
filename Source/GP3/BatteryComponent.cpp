@@ -100,6 +100,7 @@ bool UBatteryComponent::Consume(ETool Tool)
 	{
 		float PowerBeforeConsume = CurrentPower;
 		CurrentPower -= GetWorld()->DeltaTimeSeconds * ConsumeRates[Tool];
+		TotalConsumedPower += GetWorld()->DeltaTimeSeconds * ConsumeRates[Tool];
 
 		
 		return true;
