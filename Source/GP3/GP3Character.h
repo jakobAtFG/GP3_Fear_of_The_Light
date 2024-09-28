@@ -151,6 +151,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AInteractableActor* TargetInteractableActor = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool WaitingForWBPConfirmation = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ToggleCrouch = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ToggleSprint = false;
+
 	UFUNCTION()
 	void HandleDetectionStartingOverlap(
 		UPrimitiveComponent* OverlappedComponent,
@@ -220,10 +228,12 @@ protected:
 
 	/** Called for crouch input*/
 	void CrouchA(const FInputActionValue& Value);
+	void CrouchB(const FInputActionValue& Value);
 
 	/** Called for sprint input*/
 
-	void Sprint(const FInputActionValue& Value);
+	void SprintStart(const FInputActionValue& Value);
+	void SprintStop(const FInputActionValue& Value);
 
 
 	void Interaction(const FInputActionValue& Value);
