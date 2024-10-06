@@ -68,6 +68,7 @@ void UToolManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 void UToolManager::AddTool(ETool Tool)
 {
 	AvailableTools.Add(Tool);
+	OnToolAdded.Broadcast(Tool);
 }
 
 void UToolManager::EquipTool()

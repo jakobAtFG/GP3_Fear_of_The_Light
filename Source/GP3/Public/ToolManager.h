@@ -24,6 +24,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSwitchToEmp);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSwitchToHeatVision);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnToolAdded, ETool, CurrentTool);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnToolToggled, bool, ToolToggleOn, ETool, CurrentTool);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnToolSwitched, ETool, CurrentTool);
@@ -85,6 +87,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FSwitchToHeatVision OnSwitchedToHeatVision;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnToolAdded OnToolAdded;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnToolToggled OnToolToggled;
