@@ -24,6 +24,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSwitchToEmp);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSwitchToHeatVision);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnToolAdded, ETool, CurrentTool);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnToolToggled, bool, ToolToggleOn, ETool, CurrentTool);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnToolSwitched, ETool, CurrentTool);
@@ -36,16 +38,15 @@ class GP3_API UToolManager : public UActorComponent
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, Category = "ToolManager")
-	TArray<ETool> AvailableTools;
-	
-
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	//UInputAction* ItemScrollerUp;
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	//UInputAction* ItemScrollerDown;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ToolManager")
+	TArray<ETool> AvailableTools;
+
 	// Sets default values for this component's properties
 	UToolManager();
 
@@ -86,6 +87,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FSwitchToHeatVision OnSwitchedToHeatVision;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnToolAdded OnToolAdded;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnToolToggled OnToolToggled;

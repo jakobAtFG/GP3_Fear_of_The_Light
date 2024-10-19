@@ -262,8 +262,8 @@ void AGP3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AGP3Character::Move);
@@ -276,8 +276,8 @@ void AGP3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		//                                    &UBatteryComponent::PauseRechargeWhenLookingAround);
 
 
-		EnhancedInputComponent->BindAction(SprintingAction, ETriggerEvent::Started, this, &AGP3Character::Sprint);
-		EnhancedInputComponent->BindAction(SprintingAction, ETriggerEvent::Completed, this, &AGP3Character::Sprint);
+		EnhancedInputComponent->BindAction(SprintingAction, ETriggerEvent::Started, this, &AGP3Character::SprintStart);
+		EnhancedInputComponent->BindAction(SprintingAction, ETriggerEvent::Completed, this, &AGP3Character::SprintStop);
 
 
 		// Pausing
@@ -285,7 +285,7 @@ void AGP3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 		//Crouching
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AGP3Character::CrouchA);
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AGP3Character::CrouchA);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AGP3Character::CrouchB);
 
 		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Triggered, this,
 		                                   &AGP3Character::Interaction);
@@ -344,6 +344,8 @@ void AGP3Character::HandleDetectionEndingOverlap(UPrimitiveComponent* Overlapped
 	if (OtherActor->IsA(AInteractableActor::StaticClass()))
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("%s is out of range of %s"), *OtherActor->GetName(), *GetName());
+		AInteractableActor* OtherInteractableActor = Cast<AInteractableActor>(OtherActor);
+		OtherInteractableActor->CloseInfoOnScreen();
 		Cast<AInteractableActor>(OtherActor)->bIsInteractable = false;
 		InteractbleInRange--;
 	}
@@ -376,7 +378,21 @@ void AGP3Character::CrouchA(const FInputActionValue& Value)
 			Crouch();
 			UE_LOG(LogTemp, Warning, TEXT("Crouching"));
 		}
-		else
+		else if(ToggleCrouch)
+		{
+			// GetCharacterMovement()->MaxWalkSpeed = WalkingMoveSpeed;
+			// Crouch is controlled by MaxWalkSpeedCrouch
+			Crouched = false;
+			UnCrouch();
+			UE_LOG(LogTemp, Warning, TEXT("UnCrouching"));
+		}
+	}
+}
+void AGP3Character::CrouchB(const FInputActionValue& Value)
+{
+	if (Controller != nullptr)
+	{
+		if (Crouched && !ToggleCrouch)
 		{
 			// GetCharacterMovement()->MaxWalkSpeed = WalkingMoveSpeed;
 			// Crouch is controlled by MaxWalkSpeedCrouch
@@ -387,7 +403,7 @@ void AGP3Character::CrouchA(const FInputActionValue& Value)
 	}
 }
 
-void AGP3Character::Sprint(const FInputActionValue& Value)
+void AGP3Character::SprintStart(const FInputActionValue& Value)
 {
 	if (Controller != nullptr)
 	{
@@ -397,10 +413,23 @@ void AGP3Character::Sprint(const FInputActionValue& Value)
 			Sprinting = true;
 			UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
 		}
-		else
+		else if(ToggleSprint)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = WalkingMoveSpeed;
 			Sprinting = false;
+			UE_LOG(LogTemp, Warning, TEXT("Stop Sprinting"));
+		}
+	}
+}
+void AGP3Character::SprintStop(const FInputActionValue& Value)
+{
+	if (Controller != nullptr)
+	{
+		if (Sprinting && !ToggleSprint)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = WalkingMoveSpeed;
+			Sprinting = false;
+			UE_LOG(LogTemp, Warning, TEXT("Stop Sprinting"));
 		}
 	}
 }
@@ -432,23 +461,23 @@ void AGP3Character::Look(const FInputActionValue& Value)
 
 void AGP3Character::TogglePause(const FInputActionValue& Value)
 {
-	bool bGameWillPause = !UGameplayStatics::IsGamePaused(this);
-
-	UGameplayStatics::SetGamePaused(GetWorld(), bGameWillPause);
-	APlayerController* PlayerController = Cast<APlayerController>(Controller);
-
-	if (bGameWillPause && PauseMenuWidgetClass)
-	{
-		PlayerController->SetInputMode(FInputModeGameAndUI());
-		PlayerController->bShowMouseCursor = true;
-		PauseMenuWidget = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
-		PauseMenuWidget->AddToViewport();
-	}
-	else if (PauseMenuWidget)
-	{
-		PlayerController->SetInputMode(FInputModeGameOnly());
-		PlayerController->bShowMouseCursor = false;
-		PauseMenuWidget->RemoveFromParent();
+	if (!WaitingForWBPConfirmation) {
+		bool bGameWillPause = !UGameplayStatics::IsGamePaused(this);
+		UGameplayStatics::SetGamePaused(GetWorld(), bGameWillPause);
+		APlayerController* PlayerController = Cast<APlayerController>(Controller);
+		if (bGameWillPause && PauseMenuWidgetClass)
+		{
+			PlayerController->SetInputMode(FInputModeGameAndUI());
+			PlayerController->bShowMouseCursor = true;
+			PauseMenuWidget = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
+			PauseMenuWidget->AddToViewport();
+		}
+		else if (PauseMenuWidget)
+		{
+			PlayerController->SetInputMode(FInputModeGameOnly());
+			PlayerController->bShowMouseCursor = false;
+			PauseMenuWidget->RemoveFromParent();
+		}
 	}
 }
 

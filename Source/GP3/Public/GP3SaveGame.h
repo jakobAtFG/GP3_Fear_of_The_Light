@@ -65,6 +65,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FString> TriggerVolumes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FString, int> TimerTimings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NumberOfTerminalsOverridden;
 	
 	// META DATA
 

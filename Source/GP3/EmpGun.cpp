@@ -36,6 +36,8 @@ void AEmpGun::BeginPlay()
 	}
 
 	LastFireTime = 0;
+	MissLastFireTime = 0;
+
 }
 
 // Called every frame
@@ -57,7 +59,7 @@ void AEmpGun::Shoot(bool bIsToggledOn, ETool Tool)
 		Misfire();
 		return;
 	}
-	if ((!Lights[0]->IsVisible()) || (Lights[0]->Intensity == 0))
+	if ((!TargetLight->IsVisible()) || (TargetLight->Intensity == 0))
 	{
 		Misfire();
 		return;
@@ -67,8 +69,12 @@ void AEmpGun::Shoot(bool bIsToggledOn, ETool Tool)
 	if (BatteryComponent->CurrentPower < BatteryDepletion) return;
 
 	//If gun is in cooldown after shoot lamp
-	const float CurrentTime = GetWorld()->TimeSeconds;
-	if (CurrentTime - LastFireTime < FireCoolDown) return;
+	CurrentTime = GetWorld()->TimeSeconds;
+	if ((CurrentTime - LastFireTime < FireCoolDown) && (LastFireTime > 0)) {
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Still cooling down"));
+		return;
+	}
 	LastFireTime = CurrentTime;
 
 	//Remove battery power corresponding to our depletion rate.
@@ -133,12 +139,13 @@ void AEmpGun::BlueprintLineTraceFromPlayer()
 
 void AEmpGun::Misfire()
 {
+	//Delay on mis fire
+	const float MissCurrentTime = GetWorld()->TimeSeconds;
+
+	if (MissCurrentTime - MissLastFireTime < MissCoolDown) return;
+	MissLastFireTime = MissCurrentTime;
 	
 
-	//Delay on mis fire
-	const float CurrentTime = GetWorld()->TimeSeconds;
-	if (CurrentTime - LastFireTime < MissCoolDown) return;
-	LastFireTime = CurrentTime;
 
 	//Mis fire blueprint event triggered
 	EmpMisfire();

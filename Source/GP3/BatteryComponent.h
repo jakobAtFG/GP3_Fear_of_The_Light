@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsRecharging = false;
 
+	bool bIsFull = false;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RechargeRate = 5.f;
 	
@@ -33,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxPower = 100.f;
 	
+	float LastFramePower =  0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TotalConsumedPower = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector RechargeDirection = FVector(0.f);
 
@@ -61,6 +67,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FBatterySignature OnStopRecharge;
+	
+	UPROPERTY(BlueprintAssignable)
+	FBatterySignature OnFull;
+
+	UPROPERTY(BlueprintAssignable)
+	FBatterySignature OnNotFull;;
 
 	UFUNCTION()
 	void Recharge(float Rate);
@@ -70,6 +82,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleRecharge();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsBatteryFull();
 
 	UFUNCTION()
 	void PauseRechargeWhenMoving(const FInputActionValue& Value);
