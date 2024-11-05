@@ -7,6 +7,9 @@
 #include "HealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHealthDeathSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamage, float, healthPercent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHeal, float, healthPercent);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UHealthComponent : public UActorComponent
 {
@@ -32,8 +35,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float damage);
+
+	UFUNCTION(BlueprintCallable)
+	void Heal(float healAmount);
 	
 	UPROPERTY(BlueprintAssignable)
 	FHealthDeathSignature OnDeath;
-		
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnDamage OnDamage;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHeal OnHeal;
 };
