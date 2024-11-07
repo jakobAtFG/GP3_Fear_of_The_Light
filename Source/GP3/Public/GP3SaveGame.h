@@ -44,6 +44,9 @@ public:
 	float BatteryPower;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeSinceLitUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ClearanceLevel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
