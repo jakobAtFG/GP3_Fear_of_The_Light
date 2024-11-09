@@ -51,8 +51,15 @@ void ASaveTrigger::OnOverlapBegin(
 {
 	if (!(bSaveOnlyOnce && bHasSaved) && OtherActor->IsA<AGP3Character>())
 	{
-		bHasSaved = true;
-		Cast<UGameManager>(GetGameInstance())->RequestSave();
+		OnSaveTriggered.Broadcast();
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindLambda([&]
+		{
+			bHasSaved = true;
+			Cast<UGameManager>(GetGameInstance())->RequestSave();
+		});
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.1f, false);
 	}
 }
 

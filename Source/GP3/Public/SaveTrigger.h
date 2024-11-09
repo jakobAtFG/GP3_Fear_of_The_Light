@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "SaveTrigger.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSaveTriggered);
+
 class UGP3SaveGame;
 class UBoxComponent;
 
@@ -50,6 +52,9 @@ public:
 
 	UFUNCTION()
 	void HandleSaveDataLoaded(UGP3SaveGame* SaveGame);
+
+	UPROPERTY(BlueprintAssignable)
+	FSaveTriggered OnSaveTriggered;
 
 private:
 

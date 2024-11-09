@@ -64,6 +64,9 @@ public:
 	TArray<FString> TerminalOverrides;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FString> MiscellaneousInteractables;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FString, FVector> EnemyStartLocations;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
