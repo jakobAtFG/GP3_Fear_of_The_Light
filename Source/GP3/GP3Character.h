@@ -193,10 +193,10 @@ public:
 	float InvertVertical = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerSettings")
-	float HorizontalSensitivity = 1;
+	float HorizontalSensitivity = 0.75;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerSettings")
-	float VerticalSensitivity = 1;
+	float VerticalSensitivity = 0.75;
 
 	UPROPERTY(EditDefaultsOnly)
 	FVector WherePlayerIsLooking;
